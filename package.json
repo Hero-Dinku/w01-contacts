@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "w01-contacts",
   "version": "1.0.0",
   "description": "Week 01 Contacts API Project - CSE341",
@@ -12,7 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/Hero-Dinku/w01-contacts.git"
   },
-  "keywords": ["contacts", "api", "cse341"],
+  "keywords": [
+    "contacts",
+    "api",
+    "cse341"
+  ],
   "author": "Your Name",
   "license": "ISC",
   "bugs": {
@@ -20,6 +24,7 @@
   },
   "homepage": "https://github.com/Hero-Dinku/w01-contacts#readme",
   "dependencies": {
+    "body-parser": "^2.2.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongodb": "^6.20.0"

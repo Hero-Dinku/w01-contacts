@@ -1,13 +1,11 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
-const contactsController = require('../controllers/contacts'); // Import controller functions
+const contactsController = require('../controllers/contacts');
 
-// GET /contacts - Retrieve all contacts from the database
+// GET /contacts - Retrieve all contacts
 router.get('/', contactsController.getAll);
 
 // GET /contacts/:id - Retrieve a single contact by ID
 router.get('/:id', contactsController.getSingle);
-
-// POST, PUT, and DELETE endpoints will be added in Week 2
 
 module.exports = router;

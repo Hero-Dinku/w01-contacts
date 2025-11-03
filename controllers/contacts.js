@@ -1,52 +1,53 @@
-const { getDatabase } = require('../data/database');
-const mongodb = require('mongodb');
-
-// Get all contacts - Handles GET /contacts requests
+﻿// Get all contacts
 const getAll = async (req, res, next) => {
-  // #swagger.tags = ['Contacts'] - Swagger documentation tag
   try {
-    // Get all documents from the contacts collection
-    const result = await getDatabase().collection('contacts').find();
+    // Mock data
+    const mockContacts = [
+      {
+        _id: '6907a225c6ebe24d47ebf88c',
+        firstName: 'Asmamaw',
+        lastName: 'Dinku',
+        email: 'asmamaw.dinku@email.com',
+        favoriteColor: 'Blue',
+        birthday: '1995-03-15T00:00:00.000Z'
+      }
+    ];
     
-    // Convert MongoDB cursor to array
-    const contacts = await result.toArray();
-    
-    // Set response header and send JSON response
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(contacts); // Success response with contacts data
+    res.status(200).json(mockContacts);
   } catch (error) {
-    console.error(error); // Log error for debugging
-    res.status(500).json({ error: 'Failed to fetch contacts.' }); // Error response
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch contacts.' });
   }
 };
 
-// Get single contact by ID - Handles GET /contacts/:id requests
+// Get single contact by ID
 const getSingle = async (req, res, next) => {
-  // #swagger.tags = ['Contacts'] - Swagger documentation tag
   try {
-    // Convert string ID to MongoDB ObjectId
-    const contactId = new mongodb.ObjectId(req.params.id);
+    const mockContacts = [
+      {
+        _id: '6907a225c6ebe24d47ebf88c',
+        firstName: 'Asmamaw',
+        lastName: 'Dinku',
+        email: 'asmamaw.dinku@email.com',
+        favoriteColor: 'Blue',
+        birthday: '1995-03-15T00:00:00.000Z'
+      }
+    ];
     
-    // Find contact by ID
-    const result = await getDatabase().collection('contacts').find({ _id: contactId });
-    const contacts = await result.toArray();
-
-    // Check if contact was found
-    if (contacts.length === 0) {
-      res.status(404).json({ error: 'Contact not found.' }); // Not found response
-      return;
+    const contact = mockContacts.find(c => c._id === req.params.id);
+    if (contact) {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200).json(contact);
+    } else {
+      res.status(404).json({ error: 'Contact not found.' });
     }
-
-    // Return the found contact (first element in array)
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(contacts[0]); // Success response with single contact
   } catch (error) {
-    console.error(error); // Log error for debugging
-    res.status(500).json({ error: 'Failed to fetch contact.' }); // Error response
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch contact.' });
   }
 };
 
-// Export controller functions for use in routes
 module.exports = {
   getAll,
   getSingle

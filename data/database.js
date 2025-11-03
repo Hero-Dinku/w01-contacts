@@ -1,36 +1,13 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config(); // Load environment variables from .env file
-
-let database; // Global variable to store database connection
-const dbName = 'cse341_project'; // Database name in MongoDB
-
-// Initialize database connection
-const initDb = (callback) => {
-  if (database) {
-    console.log('Db is already initialized!'); // Prevent multiple connections
-    return callback(null, database);
-  }
-  
-  // Connect to MongoDB using connection string from environment variables
-  MongoClient.connect(process.env.MONGODB_URI)
-    .then((client) => {
-      database = client.db(dbName); // Store database instance
-      callback(null, database); // Return database via callback
-    })
-    .catch((err) => {
-      callback(err); // Return error if connection fails
-    });
-};
-
-// Get the database instance (throws error if not initialized)
+﻿// Simple database module - we'll add real connection later
 const getDatabase = () => {
-  if (!database) {
-    throw Error('Database not initialized'); // Safety check
-  }
-  return database;
+  return null; // Return null for now since we're using mock data
 };
 
-// Export functions for use in other files
+const initDb = (callback) => {
+  console.log('Database initialization skipped - using mock data');
+  callback(null, null);
+};
+
 module.exports = {
   initDb,
   getDatabase

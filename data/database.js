@@ -1,11 +1,32 @@
-﻿// Simple database module - we'll add real connection later
-const getDatabase = () => {
-  return null; // Return null for now since we're using mock data
-};
+﻿const { MongoClient } = require('mongodb');
+require('dotenv').config();
+
+let database;
+const dbName = 'cse341_project';
 
 const initDb = (callback) => {
-  console.log('Database initialization skipped - using mock data');
-  callback(null, null);
+  if (database) {
+    console.log('Database is already initialized!');
+    return callback(null, database);
+  }
+  
+  MongoClient.connect(process.env.MONGODB_URI)
+    .then((client) => {
+      database = client.db(dbName);
+      console.log('✅ MongoDB Connected to', dbName);
+      callback(null, database);
+    })
+    .catch((err) => {
+      console.log('❌ MongoDB Connection Error:', err);
+      callback(err);
+    });
+};
+
+const getDatabase = () => {
+  if (!database) {
+    throw Error('Database not initialized');
+  }
+  return database;
 };
 
 module.exports = {

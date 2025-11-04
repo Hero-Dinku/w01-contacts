@@ -1,5 +1,4 @@
 ﻿const { MongoClient } = require('mongodb');
-require('dotenv').config();
 
 let database;
 const dbName = 'cse341_project';
@@ -10,22 +9,26 @@ const initDb = (callback) => {
     return callback(null, database);
   }
 
-  // MongoDB connection options for Render compatibility
-  const client = new MongoClient(process.env.MONGODB_URI, {
-    tls: true,
-    tlsAllowInvalidCertificates: false,
-    serverSelectionTimeoutMS: 5000,
-    retryWrites: true
-  });
+  const connectionString = process.env.MONGODB_URI;
+  
+  if (!connectionString) {
+    console.log('❌ MONGODB_URI is not set in environment variables');
+    return callback(new Error('MONGODB_URI not set'), null);
+  }
+
+  console.log('🔗 Attempting MongoDB connection...');
+
+  const client = new MongoClient(connectionString);
 
   client.connect()
     .then((client) => {
       database = client.db(dbName);
-      console.log('✅ MongoDB Connected to', dbName);
+      console.log('✅ MongoDB Connected successfully to', dbName);
       callback(null, database);
     })
     .catch((err) => {
-      console.log('❌ MongoDB Connection Error:', err.message);
+      console.log('❌ MongoDB Connection Failed:', err.message);
+      console.log('💡 Check your MONGODB_URI in Render environment variables');
       callback(err);
     });
 };

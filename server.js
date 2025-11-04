@@ -21,21 +21,29 @@ app.use((req, res, next) => {
 // Route configuration
 app.use("/", require("./routes"));
 
-// Simple test route without DB
+// Health check - always works
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "Server is running" });
+  res.json({ 
+    status: "OK", 
+    message: "Server is running",
+    database: database ? "Connected" : "Not connected",
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Initialize database connection and start server
-mongodb.initDb((err) => {
-  if (err) {
-    console.log("Database connection failed, but starting server anyway...");
-    console.log("Error details:", err.message);
-  }
+// Start server immediately, try DB connection in background
+app.listen(port, () => {
+  console.log("🚀 Server started on port " + port);
+  console.log("📊 Health check: http://localhost:" + port + "/health");
+  console.log("📚 API Docs: http://localhost:" + port + "/api-docs");
   
-  app.listen(port, () => {
-    console.log("Server is running on port " + port);
-    console.log("Health check: http://localhost:" + port + "/health");
-    console.log("API Docs: http://localhost:" + port + "/api-docs");
+  // Try to connect to DB in background
+  mongodb.initDb((err) => {
+    if (err) {
+      console.log("⚠️  Database connection failed, but server is running");
+      console.log("💡 Error:", err.message);
+    } else {
+      console.log("✅ Database connected successfully");
+    }
   });
 });

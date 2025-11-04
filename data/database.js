@@ -9,15 +9,23 @@ const initDb = (callback) => {
     console.log('Database is already initialized!');
     return callback(null, database);
   }
-  
-  MongoClient.connect(process.env.MONGODB_URI)
+
+  // MongoDB connection options for Render compatibility
+  const client = new MongoClient(process.env.MONGODB_URI, {
+    tls: true,
+    tlsAllowInvalidCertificates: false,
+    serverSelectionTimeoutMS: 5000,
+    retryWrites: true
+  });
+
+  client.connect()
     .then((client) => {
       database = client.db(dbName);
       console.log('✅ MongoDB Connected to', dbName);
       callback(null, database);
     })
     .catch((err) => {
-      console.log('❌ MongoDB Connection Error:', err);
+      console.log('❌ MongoDB Connection Error:', err.message);
       callback(err);
     });
 };

@@ -21,13 +21,21 @@ app.use((req, res, next) => {
 // Route configuration
 app.use("/", require("./routes"));
 
+// Simple test route without DB
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", message: "Server is running" });
+});
+
 // Initialize database connection and start server
 mongodb.initDb((err) => {
   if (err) {
-    console.log("Database connection error:", err);
-  } else {
-    app.listen(port, () => {
-      console.log("Database is listening and node Running on port " + port);
-    });
+    console.log("Database connection failed, but starting server anyway...");
+    console.log("Error details:", err.message);
   }
+  
+  app.listen(port, () => {
+    console.log("Server is running on port " + port);
+    console.log("Health check: http://localhost:" + port + "/health");
+    console.log("API Docs: http://localhost:" + port + "/api-docs");
+  });
 });
